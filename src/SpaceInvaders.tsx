@@ -27,17 +27,17 @@ const SHIELD_WIDTH = 140;
 const SHIELD_HEIGHT = 120;
 const SHIELD_HP = 30;
 
-// ✅ HITBOX PADDING (NEW)
+// HITBOX PADDING
 const SHIELD_HITBOX_PADDING_X = 20;
 const SHIELD_HITBOX_PADDING_Y = 30;
 
-// ===== PLAYER =====
+// PLAYER 
 const PLAYER_WIDTH = 80;
 const PLAYER_HEIGHT = 80;
 const PLAYER_LIVES = 3;
 const INVULN_TIME = 1000;
 
-// ===== SCORING =====
+// SCORING 
 const SCORE_RED = 30;
 const SCORE_GREEN = 20;
 const SCORE_BLUE = 10;
@@ -51,7 +51,7 @@ export default function SpaceInvaders() {
     const ctx = canvas.getContext("2d")!;
     ctx.imageSmoothingEnabled = false;
 
-    // ===== IMAGES =====
+    // IMAGES 
     const bgImg = new Image();
     bgImg.src = "/src/assets/invaders_background.jpg";
 
@@ -73,7 +73,7 @@ export default function SpaceInvaders() {
     const shieldImg = new Image();
     shieldImg.src = "/src/assets/shield.png";
 
-    // ===== GAME STATE =====
+    // GAME STATE 
     let score = 0;
     let lives = PLAYER_LIVES;
     let win = false;
@@ -83,19 +83,19 @@ export default function SpaceInvaders() {
     let lastMoveTime = 0;
     let invaderDirection = 1;
 
-    // ===== PLAYER =====
+    // PLAYER 
     let playerX = WIDTH / 2 - PLAYER_WIDTH / 2;
     const playerY = HEIGHT - 80;
     let lastHitTime = 0;
 
-    // ===== PLAYER BULLET =====
+    // PLAYER BULLET 
     let bulletX = 0;
     let bulletY = -1;
     const bulletSpeed = 6;
     let lastShot = 0;
     const fireCooldown = 300;
 
-    // ===== INVADERS =====
+    // INVADERS 
     const invaders: {
       x: number;
       y: number;
@@ -114,11 +114,11 @@ export default function SpaceInvaders() {
       }
     }
 
-    // ===== INVADER BULLETS =====
+    // INVADER BULLETS 
     const invaderBullets: { x: number; y: number; active: boolean }[] = [];
     const invaderBulletSpeed = 4;
 
-    // ===== SHIELDS =====
+    // SHIELDS 
     const shields: { x: number; y: number; hp: number }[] = [];
     for (let i = 0; i < 4; i++) {
       shields.push({
@@ -128,7 +128,7 @@ export default function SpaceInvaders() {
       });
     }
 
-    // ===== INPUT =====
+    // INPUT 
     const keys: Record<string, boolean> = {};
     const onKeyDown = (e: KeyboardEvent) => {
       if ([" ", "a", "d"].includes(e.key.toLowerCase())) e.preventDefault();
@@ -140,7 +140,7 @@ export default function SpaceInvaders() {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
 
-    // ===== UPDATE =====
+    // UPDATE
     function update(time: number) {
       if (win || gameOver) return;
 
@@ -155,7 +155,7 @@ export default function SpaceInvaders() {
 
       if (bulletY >= 0) bulletY -= bulletSpeed;
 
-      // ✅ Player bullet vs shields (padded hitbox)
+      //  Player bullet vs shields 
       shields.forEach((s) => {
         if (s.hp <= 0 || bulletY < 0) return;
         if (
@@ -227,7 +227,7 @@ export default function SpaceInvaders() {
         if (!b.active) return;
         b.y += invaderBulletSpeed;
 
-        // ✅ Invader bullet vs shields (padded hitbox)
+        // Invader bullet vs shields 
         shields.forEach((s) => {
           if (s.hp <= 0 || !b.active) return;
           if (
@@ -260,7 +260,7 @@ export default function SpaceInvaders() {
       if (invaders.every((i) => !i.alive)) win = true;
     }
 
-    // ===== DRAW =====
+    // DRAW 
     function draw() {
       ctx.drawImage(bgImg, 0, 0, WIDTH, HEIGHT);
 

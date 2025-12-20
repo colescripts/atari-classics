@@ -65,7 +65,7 @@ export default function App() {
         padding: "2rem",
       }}
     >
-      {/* 🔙 Back button */}
+      {/* Back button */}
       {selectedGame && (
         <button
           onClick={() => setSelectedGame(null)}
@@ -75,7 +75,7 @@ export default function App() {
         </button>
       )}
 
-      {/* 🏠 MENU */}
+      {/* MENU */}
       {!selectedGame && (
         <>
           <h1>Atari Classics</h1>
@@ -123,7 +123,7 @@ export default function App() {
         </>
       )}
 
-      {/* 🎮 GAME SCREEN */}
+      {/* GAME SCREEN */}
       {selectedGame && (
         <>
           <h1>{selectedGame.name}</h1>
