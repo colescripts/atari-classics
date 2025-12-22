@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-
 import pongImg from "./assets/pong.jpg";
 import spaceinvaderImg from "./assets/spaceinvader.jpg";
 import asteroidsImg from "./assets/asteroids.jpg";
@@ -40,21 +39,25 @@ const atariGames: Game[] = [
   },
 ];
 
+// 
+const GAME_OFFSET_X = 500; // negative = left, positive = right
+const TITLE_OFFSET_X = 700; // match GAME_OFFSET_X
+
+
 export default function App() {
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
   useEffect(() => {
-  const handleExitGame = () => {
-    setSelectedGame(null);
-  };
+    const handleExitGame = () => {
+      setSelectedGame(null);
+    };
 
-  window.addEventListener("exit-game", handleExitGame);
+    window.addEventListener("exit-game", handleExitGame);
 
-  return () => {
-    window.removeEventListener("exit-game", handleExitGame);
-  };
-}, []);
-
+    return () => {
+      window.removeEventListener("exit-game", handleExitGame);
+    };
+  }, []);
 
   return (
     <div
@@ -87,27 +90,26 @@ export default function App() {
               gap: "1.5rem",
             }}
           >
-         {atariGames.map((game) => (
-  <div
-    key={game.id}
-    onClick={() => setSelectedGame(game)}
-    style={{
-      cursor: "pointer",
-      borderRadius: "12px",
-      overflow: "hidden",
-      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.boxShadow =
-        "0 0 0 3px #3b82f6, 0 10px 30px rgba(0,0,0,0.5)";
-      e.currentTarget.style.transform = "scale(1.03)";
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.boxShadow = "none";
-      e.currentTarget.style.transform = "scale(1)";
-    }}
-  >
-
+            {atariGames.map((game) => (
+              <div
+                key={game.id}
+                onClick={() => setSelectedGame(game)}
+                style={{
+                  cursor: "pointer",
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                  transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow =
+                    "0 0 0 3px #3b82f6, 0 10px 30px rgba(0,0,0,0.5)";
+                  e.currentTarget.style.transform = "scale(1.03)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "none";
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+              >
                 <img
                   src={game.image}
                   alt={game.name}
@@ -126,25 +128,46 @@ export default function App() {
       {/* GAME SCREEN */}
       {selectedGame && (
         <>
-          <h1>{selectedGame.name}</h1>
+          <h1
+  style={{
+    transform: `translateX(${TITLE_OFFSET_X}px)`,
+  }}
+>
+  {selectedGame.name}
+</h1>
 
-          {selectedGame.name === "Pong" && <Pong />}
 
-          {selectedGame.name === "Space Invaders" && <SpaceInvaders />}
+          {/* CENTER + OFFSET CONTAINER */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                transform: `translateX(${GAME_OFFSET_X}px)`,
+              }}
+            >
+              {selectedGame.name === "Pong" && <Pong />}
 
-          {selectedGame.name === "Asteroids" && (
-            <>
-              <img
-                src={selectedGame.image}
-                alt={selectedGame.name}
-                style={{ width: "500px", borderRadius: "12px" }}
-              />
-              <p>
-                {selectedGame.year} — {selectedGame.genre}
-              </p>
-              <p>Coming soon…</p>
-            </>
-          )}
+              {selectedGame.name === "Space Invaders" && <SpaceInvaders />}
+
+              {selectedGame.name === "Asteroids" && (
+                <>
+                  <img
+                    src={selectedGame.image}
+                    alt={selectedGame.name}
+                    style={{ width: "500px", borderRadius: "12px" }}
+                  />
+                  <p>
+                    {selectedGame.year} — {selectedGame.genre}
+                  </p>
+                  <p>Coming soon…</p>
+                </>
+              )}
+            </div>
+          </div>
         </>
       )}
     </div>
