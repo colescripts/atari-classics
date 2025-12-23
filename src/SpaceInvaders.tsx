@@ -57,11 +57,11 @@ export default function SpaceInvaders() {
   useEffect(() => {
     const canvasMaybe = canvasRef.current;
     if (!canvasMaybe) return;
-    const canvas = canvasMaybe; // ✅ stable non-null reference for TS
+    const canvas = canvasMaybe; // 
     const ctx = canvas.getContext("2d")!;
     ctx.imageSmoothingEnabled = false;
 
-    // BUTTON RECTS (used only on GAME OVER screen)
+    // BUTTON RECTS 
     const menuBtn = {
       x: WIDTH / 2 - MENU_BTN_W / 2,
       y: 300,
@@ -117,7 +117,7 @@ export default function SpaceInvaders() {
     let deathTime = -1;
 
 
-    // Hover tracking (for GAME OVER buttons)
+    // Hover tracking 
     let mouseX = -1;
     let mouseY = -1;
 
@@ -130,7 +130,7 @@ export default function SpaceInvaders() {
     let playerX = WIDTH / 2 - PLAYER_WIDTH / 2;
     const playerY = HEIGHT - 80;
 
-    // Damage animation timing (blink + tiny jitter)
+    // Damage animation timing 
     let lastHitTime = -999999;
 
     // Player bullet
@@ -166,7 +166,7 @@ export default function SpaceInvaders() {
 
     // Invader bullets
     const invaderBullets: { x: number; y: number; active: boolean }[] = [];
-    const invaderBulletSpeed = 2;
+    const invaderBulletSpeed = 1;
 
     // Shields
     const shields: { x: number; y: number; hp: number }[] = [];
@@ -182,6 +182,9 @@ export default function SpaceInvaders() {
       score = 0;
       lives = PLAYER_LIVES;
       screen = "PLAYING";
+
+      deathTime = -1; 
+
 
       playerX = WIDTH / 2 - PLAYER_WIDTH / 2;
       lastHitTime = -999999;
@@ -226,7 +229,7 @@ export default function SpaceInvaders() {
       const x = (e.clientX - rect.left) * scaleX;
       const y = (e.clientY - rect.top) * scaleY;
 
-      // HOME -> back to main menu (your existing approach)
+      // HOME 
       if (
         x >= menuBtn.x &&
         x <= menuBtn.x + menuBtn.w &&
@@ -264,6 +267,22 @@ export default function SpaceInvaders() {
 
     function update(time: number) {
       if (screen !== "PLAYING") return;
+
+      // Handle delayed death 
+if (deathTime !== -1) {
+  if (Date.now() - deathTime > 400) {
+    // save high score
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem("si_high_score", String(highScore));
+    }
+
+    screen = "GAME_OVER";
+  }
+
+  return; // stop game logic during death pause
+}
+
 
       // Movement
       if (keys["a"] && playerX > 0) playerX -= 2;
@@ -382,29 +401,16 @@ export default function SpaceInvaders() {
   b.y < playerY + PLAYER_HEIGHT
 ) {
   lives--;
-  lastHitTime = Date.now();   // ✅ THIS TRIGGERS BLINK + SHAKE
+  lastHitTime = Date.now();   
   b.active = false;
 
-  playerX = Math.max(
-    0,
-    Math.min(WIDTH - PLAYER_WIDTH, playerX + (Math.random() < 0.5 ? -8 : 8))
-  );
+ 
 
+          
+        if (lives <= 0 && deathTime === -1) {
+      deathTime = Date.now(); 
+}
 
-          // tiny knock feeling (clamp)
-          playerX = Math.max(
-            0,
-            Math.min(WIDTH - PLAYER_WIDTH, playerX + (Math.random() < 0.5 ? -8 : 8))
-          );
-
-          if (lives <= 0) {
-            // update high score
-            if (score > highScore) {
-              highScore = score;
-              localStorage.setItem("si_high_score", String(highScore));
-            }
-            screen = "GAME_OVER";
-          }
         }
 
         if (b.y > HEIGHT) b.active = false;
@@ -434,15 +440,12 @@ export default function SpaceInvaders() {
         }
       });
 
-      // player (blink + tiny jitter when hit)
+      // player 
       const invuln = Date.now() - lastHitTime <= INVULN_TIME;
       const blinkOn = !invuln || Date.now() % 200 < 100;
 
-      let drawPlayerX = playerX;
-      if (Date.now() - lastHitTime < 180) {
-        // tiny shake right after damage
-        drawPlayerX = playerX + (Date.now() % 80 < 40 ? -1 : 1);
-      }
+      const drawPlayerX = playerX;
+
 
       if (blinkOn) {
         ctx.drawImage(playerImg, drawPlayerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -454,7 +457,7 @@ export default function SpaceInvaders() {
         ctx.fillRect(bulletX, bulletY, 4, 10);
       }
 
-      // invader bullets (sprite)
+      // invader bullets 
 invaderBullets.forEach((b) => {
   if (!b.active) return;
 
